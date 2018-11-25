@@ -86,7 +86,7 @@ public class REVTrixbot extends GenericFTCRobot
     LimitedMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedMotorDrivenActuator("EH2motor0",
             0, 3, DcMotorSimple.Direction.FORWARD, false,
             false, true, null, null,
-            true, false, true, 1);
+            true, false, 1);
 
     MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
             0, 3, 0,
@@ -112,12 +112,12 @@ public class REVTrixbot extends GenericFTCRobot
             laArmLifter = new LimitedMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
                     LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,
                     false, false, true, null,
-                    null, true, false, true,1);
+                    null, true, false, 1);
 
             laArm = new LimitedMotorDrivenActuator(LA_MOTOR_NAME,
                     LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
                     false, true, null, null,
-                    true, false, true,1);
+                    true, false, 1);
         }
 
         public void init(HardwareMap ahwMap){

@@ -28,7 +28,6 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
     private final boolean HAS_ENCODER;
     private final boolean GO_TO_MIN_AT_INIT;
     private final boolean GO_TO_MAX_AT_INIT;
-    private final boolean HOLD_POSITION_WHEN_STOPPED;
 
     private DigitalChannel minimumLimitSwitch;
     private final String MINIMUM_LIMIT_SWITCH_NAME;
@@ -44,7 +43,6 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
                                @Nullable final String MINIMUM_LIMIT_SWITCH_NAME,
                                @Nullable final String MAXIMUM_LIMIT_SWITCH_NAME,
                                final boolean GO_TO_MIN_AT_INIT, final boolean GO_TO_MAX_AT_INIT,
-                               final boolean HOLD_POSITION_WHEN_STOPPED,
                                final double INIT_MOTOR_SPEED) throws IllegalArgumentException {
 
         this.HAS_MINIMUM_LIMIT_SWITCH = HAS_MINIMUM_LIMIT_SWITCH;
@@ -65,9 +63,6 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
         if(!HAS_ENCODER && (MAXIMUM_ROTAIONS != null || MINIMUM_ROTATIONS != null))
             throw new IllegalArgumentException("Cannot use max and min rotations without an encoder");
 
-        if(!HAS_ENCODER && HOLD_POSITION_WHEN_STOPPED)
-            throw new IllegalArgumentException("Cannot track position change without encoder");
-
         this.MOTOR_NAME = MOTOR_NAME;
         this.MINIMUM_ROTATIONS = MINIMUM_ROTATIONS;
         this.MAXIMUM_ROTAIONS = MAXIMUM_ROTAIONS;
@@ -77,8 +72,6 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
         this.MINIMUM_LIMIT_SWITCH_NAME = MINIMUM_LIMIT_SWITCH_NAME;
 
         this.INIT_MOTOR_SPEED = INIT_MOTOR_SPEED;
-
-        this.HOLD_POSITION_WHEN_STOPPED = HOLD_POSITION_WHEN_STOPPED;
     }
 
     public void init(HardwareMap ahwMap) {
@@ -87,10 +80,6 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
         motor.setPower(0);
 
         if(HAS_ENCODER){
-            if(HOLD_POSITION_WHEN_STOPPED)
-                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            else if (!HOLD_POSITION_WHEN_STOPPED)
-                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             if(GO_TO_MIN_AT_INIT){
                 moveToMinPos(INIT_MOTOR_SPEED);
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -140,9 +129,8 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
             while (!minimumLimitSwitch.getState() && speed <0) {
                 motor.setPower(speed);
             }
-            motor.setPower(0); //then don't forget to stop motor.
             if(HAS_ENCODER){
-                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  //hopefully actuator will not fall too much in the time it resets encoder
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             motor.setPower(0); //then don't forget to stop motor.
