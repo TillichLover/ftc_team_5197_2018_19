@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * */
 
 
-public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
+public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
     private DcMotor motor;
     private final double INIT_MOTOR_SPEED;
     private final String MOTOR_NAME;
@@ -47,17 +47,17 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
     private DigitalChannel maximumLimitSwitch;
     private final String MAXIMUM_LIMIT_SWITCH_NAME;
 
-    LimitedMotorDrivenActuator(final String MOTOR_NAME, @Nullable final Integer MINIMUM_ROTATIONS,
-                               @Nullable final Integer MAXIMUM_ROTAIONS, DcMotor.Direction direction,
-                               final boolean HAS_MINIMUM_LIMIT_SWITCH,
-                               final boolean HAS_MAXIMUM_LIMIT_SWITCH,
-                               final boolean HAS_ENCODER,
-                               @Nullable final String MINIMUM_LIMIT_SWITCH_NAME,
-                               @Nullable final String MAXIMUM_LIMIT_SWITCH_NAME,
-                               @Nullable final Integer ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH,
-                               final boolean GO_TO_MIN_AT_INIT, final boolean GO_TO_MAX_AT_INIT,
-                               final boolean HOLD_POSITION_WHEN_STOPPED,
-                               final double INIT_MOTOR_SPEED) throws IllegalArgumentException {
+    LimitedDcMotorDrivenActuator(final String MOTOR_NAME, @Nullable final Integer MINIMUM_ROTATIONS,
+                                 @Nullable final Integer MAXIMUM_ROTAIONS, DcMotor.Direction direction,
+                                 final boolean HAS_MINIMUM_LIMIT_SWITCH,
+                                 final boolean HAS_MAXIMUM_LIMIT_SWITCH,
+                                 final boolean HAS_ENCODER,
+                                 @Nullable final String MINIMUM_LIMIT_SWITCH_NAME,
+                                 @Nullable final String MAXIMUM_LIMIT_SWITCH_NAME,
+                                 @Nullable final Integer ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH,
+                                 final boolean GO_TO_MIN_AT_INIT, final boolean GO_TO_MAX_AT_INIT,
+                                 final boolean HOLD_POSITION_WHEN_STOPPED,
+                                 final double INIT_MOTOR_SPEED) throws IllegalArgumentException {
 
         this.HAS_MINIMUM_LIMIT_SWITCH = HAS_MINIMUM_LIMIT_SWITCH;
         this.HAS_MAXIMUM_LIMIT_SWITCH = HAS_MAXIMUM_LIMIT_SWITCH;
@@ -80,7 +80,7 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
             throw new IllegalArgumentException("Cannot use max and min rotations without an encoder");
 
         if(!HAS_ENCODER && HOLD_POSITION_WHEN_STOPPED)
-            throw new IllegalArgumentException("Cannot track position change without encoder");
+            throw new IllegalArgumentException("Cannot track position change to stop robot without encoder");
 
         if(ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH == null && HAS_ENCODER && (HAS_MAXIMUM_LIMIT_SWITCH || HAS_MINIMUM_LIMIT_SWITCH))
             throw new IllegalArgumentException("Must specify override if using encoder and limit switches");
@@ -90,6 +90,9 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
 
         if(ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH != null && HAS_ENCODER && !(HAS_MAXIMUM_LIMIT_SWITCH || HAS_MINIMUM_LIMIT_SWITCH))
             throw new IllegalArgumentException("No limit switch to override");
+
+        if(!GO_TO_MIN_AT_INIT && !HAS_MINIMUM_LIMIT_SWITCH)
+            throw new IllegalArgumentException("Cannot locate 0 position without minimum limit switch");
 
 
         this.MOTOR_NAME = MOTOR_NAME;
@@ -115,6 +118,7 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             else if (!HOLD_POSITION_WHEN_STOPPED)
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
             if(GO_TO_MIN_AT_INIT){
                 if(!HAS_MINIMUM_LIMIT_SWITCH)
                 {

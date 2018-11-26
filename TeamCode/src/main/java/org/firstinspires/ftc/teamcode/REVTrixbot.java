@@ -74,6 +74,10 @@ public class REVTrixbot extends GenericFTCRobot
     private static final double     DRIVE_WHEEL_SEPARATION  = 15.0 ;
     private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
+    REVTrixbot(){
+        super.init();
+    }
+
     FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "EH1motor0", "EH1motor1",
             "EH1motor2", "EH1motor3");
@@ -83,16 +87,17 @@ public class REVTrixbot extends GenericFTCRobot
 
     TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9); //move to 180 at init. Then to close to
 
-    LimitedMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedMotorDrivenActuator("EH2motor0",
+    LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",
             0, 3, DcMotorSimple.Direction.FORWARD, false,
             false, true, null, null,
             null,
             true, false, true, 1);
 
-    MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
+    /*MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
             0, 3, 0,
             10, "EH2servo0", "EH2motor1",
             "EH2motor2"); //Not ready.
+     */
 
     public class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
@@ -100,8 +105,8 @@ public class REVTrixbot extends GenericFTCRobot
         private final double GRIPPER_OPEN;
         private final String GRIPPER_SERVO_NAME;
 
-        LimitedMotorDrivenActuator laArmLifter;
-        LimitedMotorDrivenActuator laArm;
+        LimitedDcMotorDrivenActuator laArmLifter;
+        LimitedDcMotorDrivenActuator laArm;
 
         MineralLifter(final double GRIPPER_CLOSED, final double GRIPPER_OPEN, final int LA_ARM_LIFTER_STOWED_ROTATIONS,
                       final int LA_ARM_LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
@@ -110,13 +115,13 @@ public class REVTrixbot extends GenericFTCRobot
             this.GRIPPER_OPEN = GRIPPER_OPEN;
             this.GRIPPER_SERVO_NAME = GRIPPER_SERVO_NAME;
 
-            laArmLifter = new LimitedMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
+            laArmLifter = new LimitedDcMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
                     LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,
                     false, false, true, null,
                     null, null,
                     true, false, true,1);
 
-            laArm = new LimitedMotorDrivenActuator(LA_MOTOR_NAME,
+            laArm = new LimitedDcMotorDrivenActuator(LA_MOTOR_NAME,
                     LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
                     false, true, null, null,
                     null,

@@ -14,7 +14,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 public abstract class GenericFTCRobot {
-    protected ElapsedTime runTime = new ElapsedTime(); //
+    public ElapsedTime runTime;
     //potentially more common robot fields and methods
 
+    public void init(){
+        runTime = new ElapsedTime();
+    }
 }
