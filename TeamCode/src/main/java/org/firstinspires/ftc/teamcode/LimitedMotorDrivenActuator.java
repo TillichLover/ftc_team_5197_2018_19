@@ -30,6 +30,8 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
     private final boolean GO_TO_MAX_AT_INIT;
     private final boolean HOLD_POSITION_WHEN_STOPPED;
 
+    private final Integer ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH;
+
     private DigitalChannel minimumLimitSwitch;
     private final String MINIMUM_LIMIT_SWITCH_NAME;
 
@@ -43,6 +45,7 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
                                final boolean HAS_ENCODER,
                                @Nullable final String MINIMUM_LIMIT_SWITCH_NAME,
                                @Nullable final String MAXIMUM_LIMIT_SWITCH_NAME,
+                               @Nullable final Integer ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH,
                                final boolean GO_TO_MIN_AT_INIT, final boolean GO_TO_MAX_AT_INIT,
                                final boolean HOLD_POSITION_WHEN_STOPPED,
                                final double INIT_MOTOR_SPEED) throws IllegalArgumentException {
@@ -52,6 +55,8 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
         this.HAS_ENCODER = HAS_ENCODER;
         this.GO_TO_MIN_AT_INIT = GO_TO_MIN_AT_INIT;
         this.GO_TO_MAX_AT_INIT = GO_TO_MAX_AT_INIT;
+
+        this.ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH = ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH;
 
         if(!HAS_ENCODER && !HAS_MAXIMUM_LIMIT_SWITCH && !HAS_MINIMUM_LIMIT_SWITCH)
             throw new IllegalArgumentException("Cannot limit motion without encoding or limit switch");
@@ -67,6 +72,16 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
 
         if(!HAS_ENCODER && HOLD_POSITION_WHEN_STOPPED)
             throw new IllegalArgumentException("Cannot track position change without encoder");
+
+        if(ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH == null && HAS_ENCODER && (HAS_MAXIMUM_LIMIT_SWITCH || HAS_MINIMUM_LIMIT_SWITCH))
+            throw new IllegalArgumentException("Must specify override if using encoder and limit switches");
+
+        if(ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH != null && !HAS_ENCODER && (HAS_MAXIMUM_LIMIT_SWITCH || HAS_MINIMUM_LIMIT_SWITCH))
+            throw new IllegalArgumentException("Cannot count rotations without encoder");
+
+        if(ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH != null && HAS_ENCODER && !(HAS_MAXIMUM_LIMIT_SWITCH || HAS_MINIMUM_LIMIT_SWITCH))
+            throw new IllegalArgumentException("No limit switch to override");
+
 
         this.MOTOR_NAME = MOTOR_NAME;
         this.MINIMUM_ROTATIONS = MINIMUM_ROTATIONS;
@@ -93,7 +108,6 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             if(GO_TO_MIN_AT_INIT){
                 moveToMinPos(INIT_MOTOR_SPEED);
-                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
@@ -137,9 +151,15 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
 
         if((HAS_MINIMUM_LIMIT_SWITCH || (rotations == MINIMUM_ROTATIONS && HAS_MINIMUM_LIMIT_SWITCH))){
             speed = -Math.abs(speed);
-            while (!minimumLimitSwitch.getState() && speed <0) {
-                motor.setPower(speed);
-            }
+            motor.setPower(speed);
+            while (!minimumLimitSwitch.getState() && speed <0){
+                if(HAS_ENCODER){
+                    if(motor.getCurrentPosition() < MINIMUM_ROTATIONS - ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH)  //play around with this threshold?
+                    {
+                        break;
+                    }
+                }
+            } //wait for limit swutch to press. But break if passed the rotation limits (as a safety in case limit switch does not work)
             motor.setPower(0); //then don't forget to stop motor.
             if(HAS_ENCODER){
                 motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  //hopefully actuator will not fall too much in the time it resets encoder
@@ -150,8 +170,14 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
 
         if (HAS_MAXIMUM_LIMIT_SWITCH || (rotations == MAXIMUM_ROTAIONS && HAS_MAXIMUM_LIMIT_SWITCH)) {  //default to these commands if limit switch. For maximum, exit method after. For minimum, it is possible to reset encoder, so no need to exit.
             speed = Math.abs(speed);
+            motor.setPower(speed);
             while (!maximumLimitSwitch.getState() && speed > 0) {
-                motor.setPower(speed);
+                if(HAS_ENCODER){
+                    if(motor.getCurrentPosition() > MAXIMUM_ROTAIONS + ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH)  //play around with this threshold?
+                    {
+                        break;
+                    }
+                }
             }
             motor.setPower(0);
             return;
@@ -219,6 +245,9 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
                 motor.setPower(-(Math.abs(speed)));
             }
         }
+
+        while (moveToMaxPosButton || moveToMinPosButton); //wait for button to release
+        motor.setPower(0); //stop motor.
     }
 
     public void teleOpMoveToMinPos(boolean moveToMinPosButton, double speed){
