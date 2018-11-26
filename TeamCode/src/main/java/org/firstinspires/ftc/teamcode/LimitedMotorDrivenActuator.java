@@ -9,10 +9,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 /**
  * THIS IS NOT AN OPMODE
  * IT is a way of creating a Dc motorized actuator that has limits to movement.
+ * *IMPORTANT*
+ * If ony using encoders and/or an upper limit switch(no lower limit switch), it is required
+ * that before initizalization, the actuator must be manually moved to a zero position for the robot to
+ * capture upon initialization. Otherwise, the acutator will not function properly which may lead to
+ * damage to the robot. This is not necesaary if you have a lower limit switch; nontheless, if the acutator
+ * is going to actively pulled or pushed away from the zero position during inttializaiotn (like due to
+ * hanging the robot), initizlaiziton
+ * should be done before placing the actuator in this condition on the field to be safe.
  *
  * Version History
  * =================
  * v0.1  @Author Lorenzo Pedroza 11/24/18 //TODO Test this.
+ * v0.2  @Authot Lorenzo Pedroza 11/26/18 More additions
  * */
 
 
@@ -107,9 +116,16 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
             else if (!HOLD_POSITION_WHEN_STOPPED)
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             if(GO_TO_MIN_AT_INIT){
+                if(!HAS_MINIMUM_LIMIT_SWITCH)
+                {
+                    motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);//assume user starts robot at zero positino
+                    motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                }
                 moveToMinPos(INIT_MOTOR_SPEED);
+
             }
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motor.setPower(0); //just to be sure.
         }
         else {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
