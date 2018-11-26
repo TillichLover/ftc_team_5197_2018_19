@@ -102,7 +102,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         // Init robot
 
         robot.dt.init(hardwareMap);
-        robot.revTrixbotLifter.init(hardwareMap);
+        //robot.revTrixbotLifter.init(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -113,7 +113,10 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.revTrixbotLifter.fullyExtend(1);
+        //dropping of the robot
+        land();
+
+        //robot.revTrixbotLifter.fullyExtend(1);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {
@@ -124,7 +127,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
 
-            if (locator.getArea() < 1750 )
+            if (locator.getArea() < 1200 )
                 visible = false;
 
             if (locator.getRatio() > 2.5)
@@ -183,6 +186,11 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
         telemetry.update();// Gold X pos.
     }
+
+    private void land(){
+        //procedures of the robot landing
+    }
+
 
     private void targetLeft()  {
         // build a profile to handle target on left

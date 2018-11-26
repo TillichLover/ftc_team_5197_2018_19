@@ -113,6 +113,9 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        land();
+        //dropping of the robot
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
@@ -122,7 +125,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
 
-            if (locator.getArea() < 1750 )
+            if (locator.getArea() < 1200 )
                 visible = false;
 
             if (locator.getRatio() > 2.5)
@@ -180,6 +183,10 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
 
         telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
         telemetry.update();// Update Display
+    }
+
+    private void land(){
+        //procedures of the robot landing
     }
 
     private void targetLeft()  {

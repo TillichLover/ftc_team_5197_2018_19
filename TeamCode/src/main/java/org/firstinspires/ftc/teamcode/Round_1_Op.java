@@ -114,7 +114,7 @@ public class Round_1_Op extends LinearOpMode {
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
 
-            if (locator.getArea() < 1750 )
+            if (locator.getArea() < 1200 )
                 visible = false;
 
             if (locator.getRatio() > 2.5)
