@@ -269,6 +269,7 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
                 }
             }
         }
+        else speed = 0;
 
         motor.setPower(speed);
         //only set speed once
