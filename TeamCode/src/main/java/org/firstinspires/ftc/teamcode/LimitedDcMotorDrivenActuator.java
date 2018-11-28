@@ -244,30 +244,59 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
 
     public void teleOpMove(boolean moveToMaxPosButton, boolean moveToMinPosButton, double speed){
         //always test limit switches first. Best limit test as sense physical limit.
-        if (HAS_MAXIMUM_LIMIT_SWITCH){
-            if(!maximumLimitSwitch.getState() && moveToMaxPosButton){
-                motor.setPower(Math.abs(speed));
+        speed = 0;
+        if (moveToMaxPosButton || moveToMinPosButton)
+        {
+            if (HAS_MAXIMUM_LIMIT_SWITCH){
+                if(!maximumLimitSwitch.getState() && moveToMaxPosButton){
+                    speed = (Math.abs(speed));
+                }
+            }
+
+            if(HAS_MINIMUM_LIMIT_SWITCH){
+                if(!minimumLimitSwitch.getState() && moveToMinPosButton){
+                    speed = (-(Math.abs(speed)));
+                }
+            }
+
+            if (HAS_ENCODER){
+                if((motor.getCurrentPosition() <= MAXIMUM_ROTAIONS) && moveToMaxPosButton){
+                    speed = (Math.abs(speed));
+                }
+
+                if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && moveToMinPosButton){
+                    speed = (-(Math.abs(speed)));
+                }
             }
         }
 
-        if(HAS_MINIMUM_LIMIT_SWITCH){
-            if(!minimumLimitSwitch.getState() && moveToMinPosButton){
-                motor.setPower(-(Math.abs(speed)));
-            }
-        }
+        motor.setPower(speed);
+        //only set speed once
 
-        if (HAS_ENCODER){
-            if((motor.getCurrentPosition() <= MAXIMUM_ROTAIONS) && moveToMaxPosButton){
-                motor.setPower(Math.abs(speed));
+        //THANK YOU: https://www.vexforum.com/index.php/13453-robotc-bad-programming-habits/p1#p123070
+
+        /*
+
+
+        do {
+            if(!moveToMaxPosButton || !moveToMinPosButton)
+            {
+                break;
+            }
+        }while (moveToMaxPosButton || moveToMinPosButton);
+
+
+        while (moveToMaxPosButton || moveToMinPosButton){
+            if(!moveToMaxPosButton || !moveToMinPosButton)
+            {
+                break;
             }
 
-            if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && moveToMinPosButton){
-                motor.setPower(-(Math.abs(speed)));
-            }
-        }
+        } //wait for button to release
 
-        while (moveToMaxPosButton || moveToMinPosButton); //wait for button to release
-        motor.setPower(0); //stop motor.
+        //stop motor.
+        motor.setPower(0);
+        */
     }
 
     public void teleOpMoveToMinPos(boolean moveToMinPosButton, double speed){
@@ -278,6 +307,15 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
     public void teleOpMoveToMaxPos(boolean moveToMaxPosButton, double speed){
         if(moveToMaxPosButton)
             moveToMaxPos(speed);
+    }
+
+    public void setBraking(boolean trueForOneFalseForOff) throws IllegalArgumentException{
+        if(!HAS_ENCODER)
+            throw new IllegalArgumentException("Cannot use this feature without encoder");
+        if(trueForOneFalseForOff)
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        else if(!trueForOneFalseForOff)
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
 

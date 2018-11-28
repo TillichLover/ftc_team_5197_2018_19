@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name ="REVTribotLiftTest", group = "REVTrixbot")
+//@TeleOp(name ="REVTribotLiftTest", group = "REVTrixbot")
 public class TestREVTrixbotLifter extends LinearOpMode {
     REVTrixbot robot = new REVTrixbot();
-    DcMotor motor;
+    //DcMotor motor;
     //counterclock wise retrat lifter.Counter clockwise is forward.
 
 
@@ -29,12 +29,10 @@ public class TestREVTrixbotLifter extends LinearOpMode {
 
         while(opModeIsActive()){
            //robot.roverRuckusRevTrixBotLift.moveToMaxPos(1);
-            if(gamepad1.x)
                 //motor.setPower(0.025);
-                robot.roverRuckusRevTrixBotLift.teleOpMove(gamepad1.a, gamepad1.b, 0.01);
-            else motor.setPower(0);
 
-           telemetry.addData("Lift Rotations", motor.getCurrentPosition());
+
+           telemetry.addData("Lift Rotations", robot.roverRuckusRevTrixBotLift.getCurrentPosition());
            updateTelemetry(telemetry);
         }
     }
