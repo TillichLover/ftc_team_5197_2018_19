@@ -170,8 +170,9 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
         }
 
 
-        if((HAS_MINIMUM_LIMIT_SWITCH || (rotations == MINIMUM_ROTATIONS && HAS_MINIMUM_LIMIT_SWITCH))){
-            speed = -Math.abs(speed);
+        //if((HAS_MINIMUM_LIMIT_SWITCH || (rotations == MINIMUM_ROTATIONS && HAS_MINIMUM_LIMIT_SWITCH && speed < 0))){
+        if(HAS_MINIMUM_LIMIT_SWITCH && speed < 0){
+            //speed = -Math.abs(speed);
             motor.setPower(speed);
             while (!minimumLimitSwitch.getState() && speed <0){
                 if(HAS_ENCODER){
@@ -187,9 +188,11 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             motor.setPower(0); //then don't forget to stop motor.
+            return;
         }
 
-        if (HAS_MAXIMUM_LIMIT_SWITCH || (rotations == MAXIMUM_ROTAIONS && HAS_MAXIMUM_LIMIT_SWITCH)) {  //default to these commands if limit switch. For maximum, exit method after. For minimum, it is possible to reset encoder, so no need to exit.
+        //if (HAS_MAXIMUM_LIMIT_SWITCH || (rotations == MAXIMUM_ROTAIONS && HAS_MAXIMUM_LIMIT_SWITCH)) {  //default to these commands if limit switch. For maximum, exit method after. For minimum, it is possible to reset encoder, so no need to exit.
+        if (HAS_MAXIMUM_LIMIT_SWITCH && speed > 0){
             speed = Math.abs(speed);
             motor.setPower(speed);
             while (!maximumLimitSwitch.getState() && speed > 0) {
