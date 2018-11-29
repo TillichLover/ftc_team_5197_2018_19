@@ -29,5 +29,5 @@ public interface FTCModularDrivetrainDrivable extends FTCModularizableSystems {
     void turnRadius(double speed, double radius);
 
     int getCurrentAverageDTPosition(boolean countStoppedSides); //TODO account for turning, straight lines after turning. Maybe, for specific ,straight segments, zero out Position before counting?
-    //private void setModeOfAllMotors(final DcMotor.RunMode runMode); Can't be done until Java 9 is used :(
+    //private void setModeOfAllMotors(final DcMotor.RunMode runMode); Can't be done until Java 9 is used in Android:(
 }

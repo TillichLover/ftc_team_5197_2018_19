@@ -91,7 +91,7 @@ public class REVTrixbot extends GenericFTCRobot
             0, 3550, DcMotorSimple.Direction.FORWARD, false,
             false, true, null, null,
             null,
-            true, false, true, 1);
+            true, false, true, 1); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
 
     /*MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
             0, 3, 0,
