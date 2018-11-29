@@ -88,7 +88,7 @@ public class REVTrixbot extends GenericFTCRobot
     TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9); //move to 180 at init. Then to close to
 
     LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",
-            0, 300, DcMotorSimple.Direction.FORWARD, false,
+            0, 3550, DcMotorSimple.Direction.FORWARD, false, //is reversed
             false, true, null, null,
             null,
             true, false, true, 1);

@@ -13,7 +13,13 @@ public class REVTrixbotLifterTeleOpTest extends ModularRobotIterativeOpMode {
     @Override
     public void loop() {
         //robot.roverRuckusRevTrixBotLift.setBraking(false);
-        robot.roverRuckusRevTrixBotLift.teleOpMove(gamepad1.a, gamepad1.b, 0.15);
+        robot.roverRuckusRevTrixBotLift.teleOpMove(gamepad1.a, gamepad1.b, 0.1);
+        robot.roverRuckusRevTrixBotLift.teleOpMoveToMaxPos(gamepad1.left_bumper && gamepad1.right_bumper && gamepad1.dpad_up, 0.1); //must all be pressed to prevent accidental retractions
+        robot.roverRuckusRevTrixBotLift.teleOpMoveToMinPos(gamepad1.left_bumper && gamepad1.right_bumper && gamepad1.dpad_down, 0.1);
+        //msStuckDetectLoop = //TODO make method to calculate wait time for watch dog
         telemetry.addData("Lift Rotations", robot.roverRuckusRevTrixBotLift.getCurrentPosition());
+
     }
+
+
 }

@@ -20,8 +20,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  *
  * Version History
  * =================
- * v0.1  @Author Lorenzo Pedroza 11/24/18 //TODO Test this.
+ * v0.1  @Author Lorenzo Pedroza 11/24/18 //
  * v0.2  @Authot Lorenzo Pedroza 11/26/18 More additions
+ * v0.4  @Author Lorenzo Pedroza 11/28/18 Works for only an encoder //TODO test limiy swtiches and make method to calculate time for watch dog also/or try making this class a thread.
  * */
 
 
@@ -48,7 +49,7 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
     private final String MAXIMUM_LIMIT_SWITCH_NAME;
 
     LimitedDcMotorDrivenActuator(final String MOTOR_NAME, @Nullable final Integer MINIMUM_ROTATIONS,
-                                 @Nullable final Integer MAXIMUM_ROTAIONS, DcMotor.Direction direction,
+                                 @Nullable final Integer MAXIMUM_ROTATIONS, DcMotor.Direction direction,
                                  final boolean HAS_MINIMUM_LIMIT_SWITCH,
                                  final boolean HAS_MAXIMUM_LIMIT_SWITCH,
                                  final boolean HAS_ENCODER,
@@ -73,10 +74,10 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
         if(GO_TO_MIN_AT_INIT && GO_TO_MAX_AT_INIT)
             throw new IllegalArgumentException("Cannot start at min and max");
 
-        if(HAS_ENCODER && (MINIMUM_ROTATIONS == null || MAXIMUM_ROTAIONS == null))
+        if(HAS_ENCODER && (MINIMUM_ROTATIONS == null || MAXIMUM_ROTATIONS == null))
             throw new IllegalArgumentException("Encoded actuators must specify min and max rotations regardless of min or max limit switch as fail safe");
 
-        if(!HAS_ENCODER && (MAXIMUM_ROTAIONS != null || MINIMUM_ROTATIONS != null))
+        if(!HAS_ENCODER && (MAXIMUM_ROTATIONS != null || MINIMUM_ROTATIONS != null))
             throw new IllegalArgumentException("Cannot use max and min rotations without an encoder");
 
         if(!HAS_ENCODER && HOLD_POSITION_WHEN_STOPPED)
@@ -97,7 +98,7 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
 
         this.MOTOR_NAME = MOTOR_NAME;
         this.MINIMUM_ROTATIONS = MINIMUM_ROTATIONS;
-        this.MAXIMUM_ROTAIONS = MAXIMUM_ROTAIONS;
+        this.MAXIMUM_ROTAIONS = MAXIMUM_ROTATIONS;
         this.direction = direction;
 
         this.MAXIMUM_LIMIT_SWITCH_NAME = MAXIMUM_LIMIT_SWITCH_NAME;
@@ -244,19 +245,22 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
 
     public void teleOpMove(boolean moveToMaxPosButton, boolean moveToMinPosButton, double speed){
         //always test limit switches first. Best limit test as sense physical limit.
-        speed = 0;
         if (moveToMaxPosButton || moveToMinPosButton)
         {
             if (HAS_MAXIMUM_LIMIT_SWITCH){
                 if(!maximumLimitSwitch.getState() && moveToMaxPosButton){
                     speed = (Math.abs(speed));
                 }
+
+                else speed = 0;
             }
 
             if(HAS_MINIMUM_LIMIT_SWITCH){
                 if(!minimumLimitSwitch.getState() && moveToMinPosButton){
                     speed = (-(Math.abs(speed)));
                 }
+
+                else speed = 0;
             }
 
             if (HAS_ENCODER){
@@ -264,9 +268,11 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
                     speed = (Math.abs(speed));
                 }
 
-                if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && moveToMinPosButton){
+                else if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && moveToMinPosButton){
                     speed = (-(Math.abs(speed)));
                 }
+
+                else speed = 0;
             }
         }
         else speed = 0;
