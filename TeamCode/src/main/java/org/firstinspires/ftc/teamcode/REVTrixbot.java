@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.support.annotation.Nullable;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -64,24 +66,49 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class REVTrixbot extends GenericFTCRobot
 {
     // REVTrixbot specific measurements
-    // ** to do: calibration.
-    private static final double     COUNTS_PER_MOTOR_REV    = 288 ;
-    private static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
 
-    // REVTrixbot specific drive train members.
-    // ** to do: check these for REVTrixbot dimensions.
-    private static final double     WHEEL_DIAMETER_INCHES   = 3.5 ; // 90mm Traction Wheel
-    private static final double     DRIVE_WHEEL_SEPARATION  = 15.0 ;
-    private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
     REVTrixbot(){
         super.init();
     }
 
-    FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
-            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "EH1motor0", "EH1motor1",
-            "EH1motor2", "EH1motor3");
+    static class DriveTrain extends FourWheelDriveTrain {
+        // ** to do: calibration.
+        private static final double     COUNTS_PER_MOTOR_REV    = 288 ;
+        private static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
 
+        // REVTrixbot specific drive train members.
+        // ** to do: check these for REVTrixbot dimensions.
+        private static final double     WHEEL_DIAMETER_INCHES   = 3.5 ; // 90mm Traction Wheel
+        private static final double     DRIVE_WHEEL_SEPARATION  = 15.0 ;
+        private final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18 can't make object static
+
+        DriveTrain() {
+            super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, DcMotor.RunMode.RUN_USING_ENCODER, "EH1motor0",
+                    "EH1motor1", "EH1motor2", "EH1motor3");
+        }
+    }
+
+    static class IdentifierFor5197Depositor extends TeamIdenfifierDepositer {
+        IdentifierFor5197Depositor() {
+            super(0.5, 0.9);
+        }
+    }
+
+    static class RoverRuckusRevTrixBotLift extends LimitedDcMotorDrivenActuator{ //static, cannot be inherited further.
+        RoverRuckusRevTrixBotLift() throws IllegalArgumentException {
+            super("EH2motor1", 0, 3550, DcMotorSimple.Direction.FORWARD,
+                    false, false, true,
+                    null, null, null,
+                    true, false, true, 0.5);
+        }
+    }
+
+    DriveTrain driveTrain = new DriveTrain();
+    IdentifierFor5197Depositor identifierFor5197Depositor = new IdentifierFor5197Depositor();
+    RoverRuckusRevTrixBotLift roverRuckusRevTrixBotLift = new RoverRuckusRevTrixBotLift();
+
+    /*
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
@@ -99,7 +126,9 @@ public class REVTrixbot extends GenericFTCRobot
             "EH2motor2"); //Not ready.
      */
 
-    public class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+    //Becuase I need to mantain the paramater and want to multithread these objects, I need  //TODO may need to make methods synchonized
+
+    public class MineralLifter extends Thread implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
         private final double GRIPPER_CLOSED;
         private final double GRIPPER_OPEN;
@@ -154,7 +183,7 @@ public class REVTrixbot extends GenericFTCRobot
 
     }
 
-    public class TeamIdenfifierDepositer implements FTCModularizableSystems{
+    public class TeamIdenfifierDepositer extends Thread implements FTCModularizableSystems{
         private Servo glypgDepositServo = null;
         private final double INIT_POS;
         private final double DEPOSIT_POS;

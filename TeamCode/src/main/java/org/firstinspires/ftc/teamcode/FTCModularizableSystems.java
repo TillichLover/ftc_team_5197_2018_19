@@ -14,6 +14,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * v 0.1 10/11/18 @Lorenzo Pedroza Added this javadoc.
  */
 
-public interface FTCModularizableSystems {
+public interface FTCModularizableSystems /*extends Runnable*/ {  //this allow all modularizable systens to be runnables that
     void init(HardwareMap ahwMap);
 }

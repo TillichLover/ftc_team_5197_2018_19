@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * */
 
 
-public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
+public class LimitedDcMotorDrivenActuator extends Thread implements FTCModularizableSystems{
     private DcMotor motor;
     private final double INIT_MOTOR_SPEED;
     private final String MOTOR_NAME;

@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * v 0.1 11/02/18 @Lorenzo Pedroza. Added this Javadoc
  */
 
-public abstract class ModularDriveTrain implements FTCModularDrivetrainDrivable {
+public abstract class ModularDriveTrain extends Thread implements FTCModularDrivetrainDrivable {
     // drivetrain specific measurements
     protected final double     COUNTS_PER_MOTOR_REV;
     protected final double     DRIVE_GEAR_REDUCTION;
