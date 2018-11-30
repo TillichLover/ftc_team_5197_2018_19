@@ -30,6 +30,7 @@ public class TestREVTrixbotLifter extends LinearOpMode {
         while(opModeIsActive()){
            //robot.roverRuckusRevTrixBotLift.moveToMaxPos(1);
                 //motor.setPower(0.025);
+            robot.roverRuckusRevTrixBotLift.setBraking(false);
 
 
            telemetry.addData("Lift Rotations", robot.roverRuckusRevTrixBotLift.getCurrentPosition());
