@@ -112,10 +112,12 @@ public class REVTrixbot extends GenericFTCRobot
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
-    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9); //move to 180 at init. Then to close to
+    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9, "EH1servo5"); //move to 180 at init. Then to close to
+
+    MineralPushingPaddles revTrixbotMineralPaddles = new MineralPushingPaddles(0.0, 0.0, 0.4, "EH1servo3", "EH1servo4");
 
     LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",
-            0, 3550, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
+            0, 2200, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
             false, true, null, null,
             null,
             true, false, true, 1); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
@@ -187,19 +189,59 @@ public class REVTrixbot extends GenericFTCRobot
         private Servo glypgDepositServo = null;
         private final double INIT_POS;
         private final double DEPOSIT_POS;
+        private final String SERVO_NAME;
 
-        TeamIdenfifierDepositer(final double INIT_POS, final double DEPOSIT_POS){
+        TeamIdenfifierDepositer(final double INIT_POS, final double DEPOSIT_POS, final String SERVO_NAME){
             this.INIT_POS = INIT_POS;
             this.DEPOSIT_POS = DEPOSIT_POS;
+            this.SERVO_NAME = SERVO_NAME;
         }
 
         public void init(HardwareMap ahwMap) {
-            glypgDepositServo = ahwMap.get(Servo.class, "servo5");
+            glypgDepositServo = ahwMap.get(Servo.class, SERVO_NAME);
             glypgDepositServo.setPosition(INIT_POS);
         }
 
         public void depositTeamIdentifier(){
             glypgDepositServo.setPosition(DEPOSIT_POS);
+        }
+    }
+
+    public class MineralPushingPaddles implements FTCModularizableSystems{
+        private Servo leftPaddle = null;
+        private Servo rightPaddle = null;
+        private final double INIT_POS;
+        private final double RETRACTED_POS;
+        private final double DEPLOYED_POS;
+        private final String LEFT_SERVO_NAME;
+        private final String RIGHT_SERVO_NAME;
+
+        MineralPushingPaddles(final double INIT_POS, final double RETRACTED_POS, final double DEPLOYED_POS,
+                              final String LEFT_SERVO_NAME, final String RIGHT_SERVO_NAME){
+            this.INIT_POS = INIT_POS;
+            this.RETRACTED_POS = RETRACTED_POS;
+            this.DEPLOYED_POS = DEPLOYED_POS;
+            this.LEFT_SERVO_NAME = LEFT_SERVO_NAME;
+            this.RIGHT_SERVO_NAME = RIGHT_SERVO_NAME;
+        }
+
+        @Override
+        public void init(HardwareMap ahwMap) {
+            leftPaddle = ahwMap.get(Servo.class, LEFT_SERVO_NAME);
+            rightPaddle = ahwMap.get(Servo.class, RIGHT_SERVO_NAME);
+            leftPaddle.setPosition(INIT_POS);
+            rightPaddle.setPosition(INIT_POS);
+        }
+
+        public void teleOpDeployRetractPaddles(boolean deployButton, boolean retractButton){
+            if(deployButton){
+                leftPaddle.setPosition(DEPLOYED_POS);
+                rightPaddle.setPosition(DEPLOYED_POS);
+            }
+            else if (retractButton){
+                leftPaddle.setPosition(RETRACTED_POS);
+                rightPaddle.setPosition(RETRACTED_POS);
+            }
         }
     }
 }
