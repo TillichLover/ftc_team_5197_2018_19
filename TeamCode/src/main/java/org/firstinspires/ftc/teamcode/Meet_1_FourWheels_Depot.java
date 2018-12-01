@@ -174,11 +174,16 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
     private void land(){
         robot.roverRuckusRevTrixBotLift.setBraking(false);
         robot.roverRuckusRevTrixBotLift.moveToMaxPos(1);
-        sleep(2000);
+        sleep(2500);
         robot.roverRuckusRevTrixBotLift.setBraking(true);
+        sleep(2000);
         robot.dt.encoderDrive(1, 5, 5);
-        sleep(3000);
-        robot.dt.encoderDrive(1, -20, 20);
+        sleep(1000);
+        /*
+        robot.roverRuckusRevTrixBotLift.moveToMinPos(1); //do so robot can move under lander. TODO. Put it back
+        sleep(3700);
+        */
+        robot.dt.encoderDrive(1, -13, 13); //TODO due other way as to avoid hitting other robots
         sleep(1000);
 
 

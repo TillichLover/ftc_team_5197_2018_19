@@ -117,23 +117,25 @@ public class REVTrixbot extends GenericFTCRobot
     MineralPushingPaddles revTrixbotMineralPaddles = new MineralPushingPaddles(0.0, 0.0, 0.4, "EH1servo3", "EH1servo4");
 
     LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",  //Clockwise rotation is up
-            0, 4000, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
+            0, 3990, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
             false, true, null, null,
             null,
             true, false, true, 1); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
 
-    /*MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
+    MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
             0, 3, 0,
             10, "EH2servo0", "EH2motor1",
-            "EH2motor2"); //Not ready.
-     */
+            "EH2motor2", 0.0); //Not ready.
+
 
     //Becuase I need to mantain the paramater and want to multithread these objects, I need  //TODO may need to make methods synchonized
 
     public class MineralLifter extends Thread implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
+        private Servo gripper_arm = null;
         private final double GRIPPER_CLOSED;
         private final double GRIPPER_OPEN;
+        private final double UP_AND_DOWN;
         private final String GRIPPER_SERVO_NAME;
 
         LimitedDcMotorDrivenActuator laArmLifter;
@@ -141,10 +143,11 @@ public class REVTrixbot extends GenericFTCRobot
 
         MineralLifter(final double GRIPPER_CLOSED, final double GRIPPER_OPEN, final int LA_ARM_LIFTER_STOWED_ROTATIONS,
                       final int LA_ARM_LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
-                      final String GRIPPER_SERVO_NAME, final String LA_ARM_LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
+                      final String GRIPPER_SERVO_NAME, final String LA_ARM_LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME, final double UP_AND_DOWN){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
             this.GRIPPER_CLOSED = GRIPPER_CLOSED;
             this.GRIPPER_OPEN = GRIPPER_OPEN;
             this.GRIPPER_SERVO_NAME = GRIPPER_SERVO_NAME;
+            this.UP_AND_DOWN = UP_AND_DOWN;
 
             laArmLifter = new LimitedDcMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
                     LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,
@@ -161,6 +164,7 @@ public class REVTrixbot extends GenericFTCRobot
 
         public void init(HardwareMap ahwMap){
             gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
+            //gripper_arm = ahwMap.get(Servo.class, );
             closeGripper();
 
             laArmLifter.init(ahwMap);
@@ -175,6 +179,13 @@ public class REVTrixbot extends GenericFTCRobot
                 openGripper();
         }
 
+        public void teleOpGripArmUpDown (boolean upButton, boolean downButton){
+            if (upButton)
+                upGripperArm();
+            if (downButton)
+                downGripperArm();
+        }
+
         public void openGripper(){
             gripper.setPosition(GRIPPER_OPEN);
         }
@@ -182,6 +193,11 @@ public class REVTrixbot extends GenericFTCRobot
         public void closeGripper(){
             gripper.setPosition(GRIPPER_CLOSED);
         }
+
+        public void upGripperArm(){ gripper_arm.setPosition( UP_AND_DOWN + 1.0 ); }
+
+        public void downGripperArm(){ gripper_arm.setPosition( UP_AND_DOWN - 1.0 );}
+
 
     }
 
