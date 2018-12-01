@@ -51,6 +51,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
     private boolean visible = false;
     private boolean done = false;
     private double x = 0.0;
+    private double y = 0.0;
     private final static int MIDPOINT = 0;  // screen midpoint
     private final static int LEFTPOINT = -106;
     private final static int RIGHTPOINT = 106;
@@ -119,6 +120,19 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
             sleep(1000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
+            y = locator.getYPosition();
+
+            if (locator.getArea() < 1200 )
+                visible = false;
+
+            if (locator.getRatio() > 2.5)
+                visible = false;
+
+            if (locator.getScore() > 10)
+                visible = false;
+
+            if (locator.getYPosition() < 120)
+                visible = false;
 
             if(visible) {
                 if (x < 0)
