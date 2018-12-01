@@ -166,7 +166,7 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
     public void move(double speed, @Nullable Integer rotations) throws IllegalArgumentException {
         int rotationTarget;
         if(rotations.equals(MINIMUM_ROTATIONS)) //need to negate to go down.Which means making it equal to negative maximum rotaions so it goes down.
-            rotations = -MAXIMUM_ROTAIONS;
+            rotations = -MAXIMUM_ROTAIONS ; //rotaions = rotaions - Minimum Roations//TODO verify this
         if (rotations == null &&( !HAS_MAXIMUM_LIMIT_SWITCH || !HAS_MINIMUM_LIMIT_SWITCH ) && !HAS_ENCODER) {
             throw new IllegalArgumentException("Cannot limit motion without encoders at both limits if missing encoder.");
         }
