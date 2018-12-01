@@ -43,15 +43,13 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private GoldMineralDetector_2 locator = null;
+    private GoldMineralDetector locator = null;
     //private Lookeebot_4Wheels robot = null;
     private REVTrixbot robot = new REVTrixbot();
 
     private boolean visible = false;
     private boolean done = false;
     private double x = 0.0;
-    private double y = 0.0;
-
     private final static int MIDPOINT = 0;  // screen midpoint
     private final static int LEFTPOINT = -106;
     private final static int RIGHTPOINT = 106;
@@ -76,7 +74,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         String text = "??";
 
         // Init Detector
-        locator = new GoldMineralDetector_2();
+        locator = new GoldMineralDetector();
         locator.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         locator.useDefaults();
 
@@ -85,16 +83,12 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         locator.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
         locator.downscale = 0.4; // How much to downscale the input frames
 
-        //locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-        locator.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
-        locator.perfectAreaScorer.perfectArea = 2400;  // To be calibrated
+        locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-        //locator.maxAreaScorer.weight = 0.005;
-        locator.perfectAreaScorer.weight = 0.01;
+        locator.maxAreaScorer.weight = 0.005;
 
-        locator.ratioScorer.weight = 50;
-        locator.ratioScorer.perfectRatio = 1.25;  // To be calibrated
-        locator.enable();
+        locator.ratioScorer.weight = 5;
+        locator.ratioScorer.perfectRatio = 1.0;
 
         telemetry.addData("locator", "Initialized");
         telemetry.update();
@@ -102,7 +96,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         // Init robot
 
         robot.dt.init(hardwareMap);
-        //robot.revTrixbotLifter.init(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -113,11 +106,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        //dropping of the robot
-        land();
-
-        //robot.revTrixbotLifter.fullyExtend(1);
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
@@ -125,19 +113,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
             sleep(1000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
-            y = locator.getYPosition();
-
-            if (locator.getArea() < 1200 )
-                visible = false;
-
-            if (locator.getRatio() > 2.5)
-                visible = false;
-
-            if (locator.getScore() > 10)
-                visible = false;
-
-            if (locator.getYPosition() < 120)
-                visible = false;
 
             if(visible) {
                 if (x < 0)
@@ -177,7 +152,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
             }
             telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
             telemetry.addData("X Pos" , x); // Gold X pos.
-            telemetry.addData("Y Pos" , y); // Gold Y pos.
             telemetry.addData("Pos" , text); // Gold X pos.
 
             telemetry.update();// Gold X pos.
@@ -186,11 +160,6 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
         telemetry.update();// Gold X pos.
     }
-
-    private void land(){
-        //procedures of the robot landing
-    }
-
 
     private void targetLeft()  {
         // build a profile to handle target on left

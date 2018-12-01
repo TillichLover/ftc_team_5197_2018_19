@@ -116,8 +116,8 @@ public class REVTrixbot extends GenericFTCRobot
 
     MineralPushingPaddles revTrixbotMineralPaddles = new MineralPushingPaddles(0.0, 0.0, 0.4, "EH1servo3", "EH1servo4");
 
-    LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",
-            0, 2200, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
+    LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",  //Clockwise rotation is up
+            0, 4000, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
             false, true, null, null,
             null,
             true, false, true, 1); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
@@ -215,6 +215,7 @@ public class REVTrixbot extends GenericFTCRobot
         private final double DEPLOYED_POS;
         private final String LEFT_SERVO_NAME;
         private final String RIGHT_SERVO_NAME;
+        private boolean deployRetractButtonWasPressed = false;
 
         MineralPushingPaddles(final double INIT_POS, final double RETRACTED_POS, final double DEPLOYED_POS,
                               final String LEFT_SERVO_NAME, final String RIGHT_SERVO_NAME){
@@ -233,14 +234,16 @@ public class REVTrixbot extends GenericFTCRobot
             rightPaddle.setPosition(INIT_POS);
         }
 
-        public void teleOpDeployRetractPaddles(boolean deployButton, boolean retractButton){
-            if(deployButton){
+        public void teleOpDeployRetractPaddles(boolean deployRetractButton){
+            if(deployRetractButton){
                 leftPaddle.setPosition(DEPLOYED_POS);
                 rightPaddle.setPosition(DEPLOYED_POS);
+                deployRetractButtonWasPressed = true;
             }
-            else if (retractButton){
+            else if (deployRetractButtonWasPressed){
                 leftPaddle.setPosition(RETRACTED_POS);
                 rightPaddle.setPosition(RETRACTED_POS);
+                deployRetractButtonWasPressed = false; //reset. Now
             }
         }
     }
