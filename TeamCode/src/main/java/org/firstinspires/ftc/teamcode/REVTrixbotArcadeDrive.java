@@ -68,8 +68,7 @@ public class REVTrixbotArcadeDrive extends ModularRobotIterativeOpMode {
          */
         robot.dt.init(hardwareMap);
 
-        robot.goldLocator.init(hardwareMap);
-        telemetry.addData("locator", "Initialized");
+        robot.revTrixbotMineralPaddles.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello, Driver!");
@@ -98,6 +97,7 @@ public class REVTrixbotArcadeDrive extends ModularRobotIterativeOpMode {
 
 
         robot.dt.teleOpArcadeDrive(gamepad1, F310JoystickInputNames.Joysticks.LEFT_STICK);
+        robot.revTrixbotMineralPaddles.teleOpDeployRetractPaddles(gamepad1.y);
 
         telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y); //TODO make method for Arcade drive for this in drivetrain classes.
         telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
