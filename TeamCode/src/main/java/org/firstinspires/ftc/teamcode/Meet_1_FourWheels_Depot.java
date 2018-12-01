@@ -45,7 +45,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private GoldMineralDetector locator = null;
+    private GoldMineralDetector_2 locator = null;
     //private Lookeebot_4Wheels robot = null;
     private REVTrixbot robot = new REVTrixbot();
 
@@ -72,11 +72,10 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pos pos = Pos.MID;
+        Round_1_Op.Pos pos = Round_1_Op.Pos.MID;
         String text = "??";
 
-        // Init Detector
-        locator = new GoldMineralDetector();
+        locator = new GoldMineralDetector_2();
         locator.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         locator.useDefaults();
 
@@ -85,12 +84,16 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         locator.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
         locator.downscale = 0.4; // How much to downscale the input frames
 
-        locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+        //locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+        locator.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
+        locator.perfectAreaScorer.perfectArea = 2400;  // Roughly cal
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-        locator.maxAreaScorer.weight = 0.005;
+        //locator.maxAreaScorer.weight = 0.005;
+        locator.perfectAreaScorer.weight = 0.01;
 
-        locator.ratioScorer.weight = 5;
-        locator.ratioScorer.perfectRatio = 1.0;
+        locator.ratioScorer.weight = 50;
+        locator.ratioScorer.perfectRatio = 1.25;  // To be calibrated
+        locator.enable();
 
         telemetry.addData("locator", "Initialized");
         telemetry.update();
@@ -98,7 +101,6 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         // Init robot
 
         robot.dt.init(hardwareMap);
-        robot.revTrixbotMineralPaddles.init(hardwareMap);
         robot.idenfierFor5197Depositer.init(hardwareMap);
         robot.roverRuckusRevTrixBotLift.init(hardwareMap);
 
@@ -115,18 +117,18 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
         // right 2 balls are visible
-            land();
-            sleep(8000);
+            ///land();
+            //sleep(8000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
 
             if(visible) {
                 if (x < 0)
-                    pos = Pos.MID;
+                    pos = Round_1_Op.Pos.MID;
                 else if (x >= 0)
-                    pos = Pos.RIGHT;
+                    pos = Round_1_Op.Pos.RIGHT;
             }   else {
-                pos = Pos.LEFT;
+                pos = Round_1_Op.Pos.LEFT;
             }
 
             switch (pos) {
@@ -174,17 +176,19 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
     private void land(){
         robot.roverRuckusRevTrixBotLift.setBraking(false);
         robot.roverRuckusRevTrixBotLift.moveToMaxPos(1);
-        sleep(2500);
-        robot.roverRuckusRevTrixBotLift.setBraking(true);
         sleep(2000);
-        robot.dt.encoderDrive(1, 5, 5);
+        robot.roverRuckusRevTrixBotLift.setBraking(true);
+        robot.dt.encoderDrive(1, 3, 3);
         sleep(1000);
-        /*
+
         robot.roverRuckusRevTrixBotLift.moveToMinPos(1); //do so robot can move under lander. TODO. Put it back
-        sleep(3700);
-        */
-        robot.dt.encoderDrive(1, -13, 13); //TODO due other way as to avoid hitting other robots
+        sleep(2000);
+
+        robot.dt.encoderDrive(1, -2, -4); //TODO due other way as to avoid hitting other robots
         sleep(1000);
+        robot.dt.encoderDrive(1, -4, -4);
+
+
 
 
     }
@@ -208,6 +212,7 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         robot.dt.encoderDrive(1, 76, 76); //drive to crater
         sleep(1000);
         done = true;  // end the run
+
 
     }
 
@@ -248,8 +253,8 @@ public class Meet_1_FourWheels_Depot extends LinearOpMode {
         sleep(1000);
         robot.dt.encoderDrive(1, -11.83, 11.83);
         sleep(1000);
-        robot.dt.encoderDrive(1, 72, 72);
-        sleep(1000);
+        robot.dt.encoderDrive(1, 75, 75);
+        sleep(1500);
         done = true;  // end the run
     }
 

@@ -99,8 +99,6 @@ public class REVTrixbotTankDrive extends ModularRobotIterativeOpMode{
     public void loop() {
 
         robot.roverRuckusRevTrixBotLift.teleOpMove(gamepad1.a, gamepad1.b, 1);
-
-
         robot.dt.teleOpTankDrive(gamepad1);
 
         telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);

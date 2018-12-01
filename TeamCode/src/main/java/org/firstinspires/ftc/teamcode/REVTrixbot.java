@@ -117,7 +117,7 @@ public class REVTrixbot extends GenericFTCRobot
     MineralPushingPaddles revTrixbotMineralPaddles = new MineralPushingPaddles(0.0, 0.0, 0.4, "EH1servo3", "EH1servo4");
 
     LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",  //Clockwise rotation is up
-            0, 3990, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
+            0, 3500, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
             false, true, null, null,
             null,
             true, false, true, 1); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
