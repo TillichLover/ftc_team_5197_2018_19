@@ -38,18 +38,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Meet 1 FourWheels Facing Crater", group="REVTrixbot")
 //@Disabled
+//Using 20:1 lift motor in CONFIG. Need to consult with hardware on this.
 public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private GoldMineralDetector locator = null;
+    private GoldMineralDetector_2 locator = null;
     //private Lookeebot_4Wheels robot = null;
     private REVTrixbot robot = new REVTrixbot();
 
     private boolean visible = false;
     private boolean done = false;
     private double x = 0.0;
+    private double y = 0.0;
     private final static int MIDPOINT = 0;  // screen midpoint
     private final static int LEFTPOINT = -106;
     private final static int RIGHTPOINT = 106;
@@ -70,11 +72,12 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pos pos = Pos.MID;
+        Round_1_Op.Pos pos = Round_1_Op.Pos.MID;
         String text = "??";
 
+
         // Init Detector
-        locator = new GoldMineralDetector();
+        locator = new GoldMineralDetector_2();
         locator.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         locator.useDefaults();
 
@@ -83,12 +86,16 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         locator.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
         locator.downscale = 0.4; // How much to downscale the input frames
 
-        locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+        //locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+        locator.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
+        locator.perfectAreaScorer.perfectArea = 2400;  // Roughly cal
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-        locator.maxAreaScorer.weight = 0.005;
+        //locator.maxAreaScorer.weight = 0.005;
+        locator.perfectAreaScorer.weight = 0.01;
 
-        locator.ratioScorer.weight = 5;
-        locator.ratioScorer.perfectRatio = 1.0;
+        locator.ratioScorer.weight = 50;
+        locator.ratioScorer.perfectRatio = 1.25;  // To be calibrated
+        locator.enable();
 
         telemetry.addData("locator", "Initialized");
         telemetry.update();
@@ -113,20 +120,35 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
             sleep(1000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
+            y = locator.getYPosition();
+
+            if (locator.getArea() < 1200 )
+                visible = false;
+
+            if (locator.getRatio() > 2.5)
+                visible = false;
+
+            if (locator.getScore() > 10)
+                visible = false;
+
+            if (locator.getYPosition() < 120)
+                visible = false;
 
             if(visible) {
                 if (x < 0)
-                    pos = Pos.LEFT;
+                    pos = Round_1_Op.Pos.LEFT;
                 else if (x >= 0)
-                    pos = Pos.MID;
+                    pos = Round_1_Op.Pos.MID;
             }   else {
-                pos = Pos.RIGHT;
+                pos = Round_1_Op.Pos.RIGHT;
             }
 
             switch (pos) {
                 case LEFT:
                     //do left thing
                     text = "LEFT";
+                    telemetry.addData("Pos" , text); // Gold X pos.
+                    telemetry.update();// Gold X pos.
                     targetLeft();
 
                     break;
@@ -134,6 +156,8 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
                 case RIGHT:
                     //do left thing
                     text = "RIGHT";
+                    telemetry.addData("Pos" , text); // Gold X pos.
+                    telemetry.update();// Gold X pos.
                     targetRight();
 
                     break;
@@ -141,6 +165,8 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
                 case MID:
                     //do left thing
                     text = "Mid";
+                    telemetry.addData("Pos" , text); // Gold X pos.
+                    telemetry.update();// Gold X pos.
                     targetCenter();
                     break;
 
