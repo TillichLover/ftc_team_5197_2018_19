@@ -59,6 +59,8 @@ import com.qualcomm.robotcore.hardware.Servo;
  *           now uses a TwoWheelDriveTrain although each of the four wheels are powered. Lifter code
  *
  * v 0.3.5    Deposit team identifier.
+ *
+ * v 0.4.0    Updated gold detector
  */
 
 public class REVTrixbot extends GenericFTCRobot
@@ -83,42 +85,44 @@ public class REVTrixbot extends GenericFTCRobot
             "EH1motor2", "EH1motor3");
 
 
-    GoldMineralDetector goldLocator = new GoldMineralDetector();
+    GoldMineralDetector_2 goldLocator = new GoldMineralDetector_2();
 
     TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9, "EH1servo5"); //move to 180 at init. Then to close to
 
     MineralPushingPaddles revTrixbotMineralPaddles = new MineralPushingPaddles(0.0, 0.0, 0.4, "EH1servo3", "EH1servo4");
 
-    LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",  //Clockwise rotation is up
-            0, 3500, DcMotorSimple.Direction.FORWARD, false,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
-            false, true, null, null,
-            null,
-            true, false, true, 1); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
+    /*
 
+    LimitedDcMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedDcMotorDrivenActuator("EH2motor1",  //Clockwise rotation is up
+            0, 3500, DcMotorSimple.Direction.FORWARD, true,  //TODO add a "tolerance" encoder counts value to allow a few encoders count off. Of course limit switches are always better.
+            false, true, "EH1touchsensor1", null,
+            30,
+            true, false, true, 0.01); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
+     */
     MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
-            0, 3, 0,
-            10, "EH2servo0", "EH2motor1",
-            "EH2motor2", 0.0); //Not ready.
+            0, 400, 0,
+            10, "EH2servo0", "EH2servo1",
+            "EH2motor0", "EH2motor1"); //Not ready.
 
 
     public class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
-        private Servo gripper_arm = null;
+        private Servo gripper_wrist = null;
         private final double GRIPPER_CLOSED;
         private final double GRIPPER_OPEN;
-        private final double UP_AND_DOWN;
         private final String GRIPPER_SERVO_NAME;
+        private final String GRIPPER_WRIST_NAME;
 
         LimitedDcMotorDrivenActuator laArmLifter;
         LimitedDcMotorDrivenActuator laArm;
 
         MineralLifter(final double GRIPPER_CLOSED, final double GRIPPER_OPEN, final int LA_ARM_LIFTER_STOWED_ROTATIONS,
                       final int LA_ARM_LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
-                      final String GRIPPER_SERVO_NAME, final String LA_ARM_LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME, final double UP_AND_DOWN){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
+                      final String GRIPPER_SERVO_NAME, final String GRIPPER_WRIST_NAME, final String LA_ARM_LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
             this.GRIPPER_CLOSED = GRIPPER_CLOSED;
             this.GRIPPER_OPEN = GRIPPER_OPEN;
             this.GRIPPER_SERVO_NAME = GRIPPER_SERVO_NAME;
-            this.UP_AND_DOWN = UP_AND_DOWN;
+            this.GRIPPER_WRIST_NAME = GRIPPER_WRIST_NAME;
 
             laArmLifter = new LimitedDcMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
                     LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,
@@ -135,8 +139,10 @@ public class REVTrixbot extends GenericFTCRobot
 
         public void init(HardwareMap ahwMap){
             gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
-            //gripper_arm = ahwMap.get(Servo.class, );
+            gripper_wrist = ahwMap.get(Servo.class, GRIPPER_WRIST_NAME);
+            //gripper_wrist = ahwMap.get(Servo.class, );
             closeGripper();
+
 
             laArmLifter.init(ahwMap);
             laArm.init(ahwMap);
@@ -150,12 +156,14 @@ public class REVTrixbot extends GenericFTCRobot
                 openGripper();
         }
 
+        /*
         public void teleOpGripArmUpDown (boolean upButton, boolean downButton){
             if (upButton)
                 upGripperArm();
             if (downButton)
                 downGripperArm();
         }
+        */
 
         public void openGripper(){
             gripper.setPosition(GRIPPER_OPEN);
@@ -165,9 +173,9 @@ public class REVTrixbot extends GenericFTCRobot
             gripper.setPosition(GRIPPER_CLOSED);
         }
 
-        public void upGripperArm(){ gripper_arm.setPosition( UP_AND_DOWN + 1.0 ); }
+       // public void upGripperArm(){ gripper_wrist.setPosition( UP_AND_DOWN + 1.0 ); } TODO study this
 
-        public void downGripperArm(){ gripper_arm.setPosition( UP_AND_DOWN - 1.0 );}
+       // public void downGripperArm(){ gripper_wrist.setPosition( UP_AND_DOWN - 1.0 );} TODO study this
 
 
     }

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 /**
  * THIS IS NOT AN OPMODE
  * IT is a way of creating a Dc motorized actuator that has limits to movement.
@@ -23,6 +25,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * v0.1  @Author Lorenzo Pedroza 11/24/18 //
  * v0.2  @Authot Lorenzo Pedroza 11/26/18 More additions
  * v0.4  @Author Lorenzo Pedroza 11/28/18 Works for only an encoder //TODO test limiy swtiches and make method to calculate time for watch dog also/or try making this class a thread.
+ * v0.5  @Author Lorenzo Pedroza 11/28/18 Limit Switch code development
  * */
 
 
@@ -114,6 +117,16 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
         motor.setDirection(direction);
         motor.setPower(0);
 
+        if(HAS_MINIMUM_LIMIT_SWITCH){
+            minimumLimitSwitch = ahwMap.get(DigitalChannel.class, MINIMUM_LIMIT_SWITCH_NAME);
+            minimumLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
+        }
+
+        if(HAS_MAXIMUM_LIMIT_SWITCH){
+            maximumLimitSwitch = ahwMap.get(DigitalChannel.class, MAXIMUM_LIMIT_SWITCH_NAME);
+            maximumLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
+        }
+
         if(HAS_ENCODER){
             if(HOLD_POSITION_WHEN_STOPPED)
                 motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -134,16 +147,6 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
         }
         else {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-
-        if(HAS_MINIMUM_LIMIT_SWITCH){
-            minimumLimitSwitch = ahwMap.get(DigitalChannel.class, MINIMUM_LIMIT_SWITCH_NAME);
-            minimumLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
-        }
-
-        if(HAS_MAXIMUM_LIMIT_SWITCH){
-            maximumLimitSwitch = ahwMap.get(DigitalChannel.class, MAXIMUM_LIMIT_SWITCH_NAME);
-            maximumLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
         }
 
         if(GO_TO_MIN_AT_INIT){
@@ -171,18 +174,27 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
             throw new IllegalArgumentException("Cannot limit motion without encoders at both limits if missing encoder.");
         }
 
+        if(rotations < 0)
+            motor.setPower(-Math.abs(speed));
+        else
+            motor.setPower(Math.abs(speed)); //direction set.
+
 
         //if((HAS_MINIMUM_LIMIT_SWITCH || (rotations == MINIMUM_ROTATIONS && HAS_MINIMUM_LIMIT_SWITCH && speed < 0))){
         if(HAS_MINIMUM_LIMIT_SWITCH && speed < 0){
             //speed = -Math.abs(speed);
+            minimumLimitSwitch.setState(false);
             motor.setPower(speed);
-            while (!minimumLimitSwitch.getState() && speed <0){
+            while (true/*!getMinimumLimitSwitchPressed() && speed <0*/){
                 if(HAS_ENCODER){
                     if(motor.getCurrentPosition() < MINIMUM_ROTATIONS - ADDITIONAL_ROTATIONS_TO_OVERRIDE_LIMIT_SWITCH)  //play around with this threshold?
                     {
                         break;
                     }
+
                 }
+                if(!getMinimumLimitSwitchPressed())
+                    break;
             } //wait for limit swutch to press. But break if passed the rotation limits (as a safety in case limit switch does not work)
             motor.setPower(0); //then don't forget to stop motor.
             if(HAS_ENCODER){
@@ -233,10 +245,6 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
             rotationTarget = motor.getCurrentPosition() + rotations;
             motor.setTargetPosition(rotationTarget);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if(rotations < 0)
-                motor.setPower(-Math.abs(speed));
-            else
-                motor.setPower(Math.abs(speed)); //direction set.
             while (motor.isBusy()) ;//wait for motor to move
             motor.setPower(0);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -331,6 +339,21 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         else if(!trueForOneFalseForOff)
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+
+    public String getLimitSwitchStates(){
+        String report = null;
+        if(HAS_MINIMUM_LIMIT_SWITCH)
+            report = "MINIMUM_LIMIT_SWITCH" + minimumLimitSwitch.getState();
+        else if(HAS_MAXIMUM_LIMIT_SWITCH)
+            report += "\nMAXIMUM LIMIT SWITCH" + maximumLimitSwitch.getState();
+        else
+            report = "-1";
+        return report;
+    }
+
+    private boolean getMinimumLimitSwitchPressed(){
+        return !minimumLimitSwitch.getState(); //inverts so true.
     }
 
 
