@@ -175,9 +175,12 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
         }
 
         if(rotations < 0)
-            motor.setPower(-Math.abs(speed));
+            speed = -Math.abs(speed);
+            //motor.setPower(-Math.abs(speed));
+
         else
-            motor.setPower(Math.abs(speed)); //direction set.
+            speed = Math.abs(speed);
+           // motor.setPower(Math.abs(speed)); //direction set.
 
 
         //if((HAS_MINIMUM_LIMIT_SWITCH || (rotations == MINIMUM_ROTATIONS && HAS_MINIMUM_LIMIT_SWITCH && speed < 0))){
@@ -245,6 +248,7 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
             rotationTarget = motor.getCurrentPosition() + rotations;
             motor.setTargetPosition(rotationTarget);
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motor.setPower(speed);
             while (motor.isBusy()) ;//wait for motor to move
             motor.setPower(0);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

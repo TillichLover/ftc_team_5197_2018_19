@@ -100,7 +100,7 @@ public class REVTrixbot extends GenericFTCRobot
             true, false, true, 0.01); //TODO maybe thorw IllegalArgument exception for going to Min or Max without limit switch. Need to see if rotations being counted before runtime.
      */
     MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
-            0, 400, 0,
+            0, 2000, 0,
             10, "EH2servo0", "EH2servo1",
             "EH2motor0", "EH2motor1"); //Not ready.
 
@@ -125,10 +125,10 @@ public class REVTrixbot extends GenericFTCRobot
             this.GRIPPER_WRIST_NAME = GRIPPER_WRIST_NAME;
 
             laArmLifter = new LimitedDcMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
-                    LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,
+                    LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.REVERSE,
                     false, false, true, null,
                     null, null,
-                    true, false, true,1);
+                    true, false, true,0.01);
 
             laArm = new LimitedDcMotorDrivenActuator(LA_MOTOR_NAME,
                     LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
