@@ -67,7 +67,7 @@ public class REVTrixbotTankDrive extends ModularRobotIterativeOpMode{
          * The init() method of the hardware class does all the work here
          */
         robot.dt.init(hardwareMap);
-        robot.roverRuckusRevTrixBotLift.init(hardwareMap);
+       // robot.roverRuckusRevTrixBotLift.init(hardwareMap);
 
         //robot.goldLocator.init(hardwareMap); unnecessary
         //telemetry.addData("locator", "Initialized");
@@ -99,7 +99,7 @@ public class REVTrixbotTankDrive extends ModularRobotIterativeOpMode{
     public void loop() {
 
 
-        robot.roverRuckusRevTrixBotLift.teleOpMove(gamepad1.a, gamepad1.b, 1);
+        //robot.roverRuckusRevTrixBotLift.teleOpMove(gamepad1.a, gamepad1.b, 1);
         robot.dt.teleOpTankDrive(gamepad1);
 
         telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);

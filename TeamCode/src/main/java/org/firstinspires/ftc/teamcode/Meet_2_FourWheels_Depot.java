@@ -101,7 +101,7 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
 
         robot.dt.init(hardwareMap);
         robot.idenfierFor5197Depositer.init(hardwareMap);
-        robot.roverRuckusRevTrixBotLift.init(hardwareMap);
+        //robot.roverRuckusRevTrixBotLift.init(hardwareMap);
 
         // turn on camera
         locator.enable();
