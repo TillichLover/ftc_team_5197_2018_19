@@ -30,7 +30,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
-    private DcMotor motor;
+    protected DcMotor motor;
     private final double INIT_MOTOR_SPEED;
     private final String MOTOR_NAME;
     private final Integer MINIMUM_ROTATIONS; //using object int to allow @Nullable anotation.
@@ -266,29 +266,29 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
     public void teleOpMove(boolean moveToMaxPosButton, boolean moveToMinPosButton, double speed){
         //always test limit switches first. Best limit test as sense physical limit.
         if (moveToMaxPosButton || moveToMinPosButton)
-        {
-            if (HAS_MAXIMUM_LIMIT_SWITCH){
-                if(!maximumLimitSwitch.getState() && moveToMaxPosButton){
-                    speed = (Math.abs(speed));
-                }
+                {
+                    if (HAS_MAXIMUM_LIMIT_SWITCH){
+                        if(!maximumLimitSwitch.getState() && moveToMaxPosButton){
+                            speed = (Math.abs(speed));
+                        }
 
-                else speed = 0;
-            }
+                        else speed = 0;
+                    }
 
-            if(HAS_MINIMUM_LIMIT_SWITCH){
-                if(!minimumLimitSwitch.getState() && moveToMinPosButton){
-                    speed = (-(Math.abs(speed)));
-                }
+                    if(HAS_MINIMUM_LIMIT_SWITCH){
+                        if(!minimumLimitSwitch.getState() && moveToMinPosButton){
+                            speed = (-(Math.abs(speed)));
+                        }
 
-                else speed = 0;
-            }
+                        else speed = 0;
+                    }
 
-            if (HAS_ENCODER){
-                if((motor.getCurrentPosition() <= MAXIMUM_ROTAIONS) && moveToMaxPosButton){
-                    speed = (Math.abs(speed));
-                }
+                    if (HAS_ENCODER){
+                        if((motor.getCurrentPosition() <= MAXIMUM_ROTAIONS) && moveToMaxPosButton){
+                            speed = (Math.abs(speed));
+                        }
 
-                else if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && moveToMinPosButton){
+                        else if ((motor.getCurrentPosition() >= MINIMUM_ROTATIONS) && moveToMinPosButton){
                     speed = (-(Math.abs(speed)));
                 }
 
