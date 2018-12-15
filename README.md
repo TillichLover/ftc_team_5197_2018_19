@@ -780,3 +780,143 @@ In this latest version of the FTC SDK (20150803_001) the following changes shoul
 
 T. Eng
 August 3, 2015
+
+
+# Instructions FTC Team 5197 Repo
+## FTC Team 5197 Bienvenue !!
+
+Ce dépôt Github est fourni par le dépôt officiel FTC.
+
+### ftc_team_5197_2018_19 Conventions de Branchement
+
+Il y aura toujours une branche ```principale```. Ceci est destiné à un code prêt à la compétition entièrement fonctionnel. Ce serait la branche cible des versions de notre code robot. Si vous souhaitez travailler sur une fonctionnalité pendant un certain temps, vous souhaitez expérimenter et / ou avez besoin d'une base de code non modifiable, dérivée du maître et nommant votre branche de fonctionnalité de manière appropriée. Assurez-vous de vérifier les mises à jour à maîtriser et à  ```rebaser ``` si nécessaire. Votre branche de fonctionnalité sera supprimée une fois renvoyée dans la branche ```principale```.
+
+### Fusion de Branches
+
+Lors de la fusion avec une branche qui est la branche parente, effectuez une fusion (ou une avance rapide). Pour le scénario inversé, effectuez une rebase. Voir https://youtu.be/to6tIdy5rNc
+
+# Instructions Officielles de la FTC
+## Bienvenue!
+
+Ce référentiel GitHub contient le code source utilisé pour créer une application Android permettant de contrôler un robot de compétition *FIRST* Tech Challenge. Pour utiliser ce SDK, téléchargez / clonez l'intégralité du projet sur votre ordinateur local.
+
+Si vous êtes nouveau sur le logiciel et le système de contrôle *FIRST* Tech Challenge, vous devriez visiter le wiki en ligne pour apprendre à installer, configurer et utiliser le logiciel et le système de contrôle:
+
+https://github.com/ftctechnh/ftc_app/wiki
+
+Notez que le wiki est un document "à feuilles persistantes" qui est constamment mis à jour et modifié. Il contient les informations les plus récentes sur le logiciel et le système de contrôle *FIRST* Tech Challenge.
+
+## Télécharger le Projet
+
+Il est important de noter que ce référentiel est volumineux et peut prendre beaucoup de temps et utiliser beaucoup d’espace pour le téléchargement. Si vous souhaitez économiser du temps et de l’espace, vous pouvez choisir de télécharger uniquement la version la plus récente du dossier de projet Android:
+
+* Si vous êtes un utilisateur git, *FIRST* vous recommande d'utiliser l'argument de la ligne de commande --depth pour cloner uniquement la version la plus récente du référentiel:
+
+git clone--depth=1 https://github.com/ftctechnh/ftc_app.git
+
+* Ou, si vous préférez, vous pouvez utiliser le bouton "Télécharger le fichier Zip" disponible sur la page du référentiel principal. Le téléchargement du projet sous forme de fichier .ZIP gardera la taille du téléchargement gérable.
+
+* Vous pouvez également télécharger le dossier du projet (sous forme de fichier d'archive .zip ou .tar.gz) à partir de la sous-section Téléchargements de la page Communiqués de ce référentiel.
+
+Une fois que vous avez téléchargé et décompressé (si nécessaire) votre dossier, vous pouvez utiliser Android Studio pour importer le dossier ("Importer un projet (Eclipse ADT, Gradle, etc.)").
+
+## Obtenir de L'Aide
+### Documentation Utilisateur et Tutoriels
+
+*FIRST* maintient un wiki en ligne avec des informations et des tutoriels sur l'utilisation du logiciel * FIRST * Tech Challenge et du système de commande de robot. Vous pouvez accéder au wiki à l'adresse suivante:
+
+https://github.com/ftctechnh/ftc_app/wiki
+
+### Matériel de Référence Javadoc
+
+La documentation de référence Javadoc pour le SDK FTC est maintenant disponible en ligne. Visitez l'URL suivante pour afficher la documentation du kit de développement logiciel FTC en tant que site Web actif:
+
+http://ftctechnh.github.io/ftc_app/doc/javadoc/index.html
+
+La documentation du kit de développement logiciel FTC est également incluse dans ce référentiel. Il existe un sous-dossier appelé "doc" qui contient plusieurs sous-dossiers:
+
+* Le dossier "apk" contient les fichiers .apk pour les applications FTC Driver Station et FTC Robot Controller.
+ 
+* Le dossier "javadoc" contient la documentation utilisateur JavaDoc pour le SDK FTC.
+
+### Forum D'Utilisateurs en Ligne
+
+Pour des questions techniques sur le SDK, visitez le forum de la technologie de FTC:
+
+http://ftcforum.usfirst.org/forumdisplay.php?156-FTC-Technology
+
+************************************************* *************************************
+# Divulguer des Renseignements
+************************************************* *************************************
+
+Version 4.3 (construite le 18.10.31)
+
+* Inclut les bibliothèques et fichiers manquants liés à TensorFlow.
+
+
+# FTC Team 5197 Repo-Anweisungen
+## FTC Team 5197 Herzlich Willkommen !!
+
+Dieses Github-Repo ist vom offiziellen FTC-Repo abgegrenzt.
+
+### ftc_team_5197_2018_19 Verzweigungskonventionen
+Es wird immer einen `` `Master` `` - Zweig geben. Dies ist für einen voll funktionsfähigen Wettkampfcode vorgesehen. Es wäre der Zielzweig für die Freigabe unseres Robotercodes. Wenn an einem Feature eine Zeit lang gearbeitet werden soll, möchten Sie experimentieren und / oder benötigen eine nicht wechselnde Codebase, verzweigen Sie sich von `` master`` und benennen Sie Ihren Feature-Zweig. Suchen Sie nach Updates für Master und `` `rebase` ``, falls erforderlich. Ihr Funktionszweig wird gelöscht, nachdem er in den Zweigzurückgezogen wurde.
+
+#### Zweige Zusammenführen
+Führen Sie beim Zusammenführen mit einem Zweig, der der übergeordnete Zweig ist, eine Zusammenführung (oder einen schnellen Vorlauf) durch. Führen Sie für das Szenario "Umgekehrt" eine Rebase durch.
+Siehe https://youtu.be/to6tIdy5rNc
+
+# Offizielle FTC-Anweisungen
+## Herzlich Willkommen!
+
+Dieses GitHub-Repository enthält den Quellcode, der zum Erstellen einer Android-App zur Steuerung eines *FIRST* Tech Challenge-Wettbewerbsroboters verwendet wird. Laden Sie das gesamte Projekt auf Ihren lokalen Computer herunter, um dieses SDK zu verwenden.
+
+Wenn Sie mit der *FIRST* Tech Challenge-Software und dem Steuerungssystem noch nicht vertraut sind, sollten Sie das Online-Wiki besuchen, um zu erfahren, wie Sie die Software und das Steuerungssystem installieren, konfigurieren und verwenden.
+
+https://github.com/ftctechnh/ftc_app/wiki
+
+Beachten Sie, dass das Wiki ein "immergrünes" Dokument ist, das ständig aktualisiert und bearbeitet wird. Es enthält die aktuellsten Informationen über die *FIRST* Tech Challenge-Software und das Steuerungssystem.
+
+## Das Projekt Herunterladen
+Es ist wichtig zu wissen, dass dieses Repository groß ist und lange dauern kann und viel Platz zum Herunterladen benötigt. Wenn Sie Zeit und Speicherplatz sparen möchten, können Sie einige Optionen auswählen, um nur die aktuellste Version des Android-Projektordners herunterzuladen:
+
+* Wenn Sie ein git-Benutzer sind, empfiehlt *FIRST*, dass Sie das Befehlszeilenargument --depth verwenden, um nur die aktuellste Version des Repositorys zu klonen:
+
+git clone --depth = 1 https://github.com/ftctechnh/ftc_app.git 
+
+* Wenn Sie möchten, können Sie auch die Schaltfläche "Download Zip" verwenden, die auf der Haupt-Repository-Seite verfügbar ist. Durch das Herunterladen des Projekts als ZIP-Datei bleibt die Downloadgröße überschaubar.
+
+* Sie können den Projektordner (als ZIP-Archiv oder .Tar.gz-Archivdatei) auch im Unterabschnitt Downloads der Seite Releases für dieses Repository herunterladen.
+
+Nachdem Sie Ihren Ordner heruntergeladen und (falls erforderlich) dekomprimiert haben, können Sie ihn mit Android Studio importieren ("Projekt importieren (Eclipse ADT, Gradle usw.)".
+
+## Hilfe Bekommen
+### Benutzerdokumentation und Tutorials
+*FIRST* unterhält ein Online-Wiki mit Informationen und Anleitungen zur Verwendung der *FIRST* Tech Challenge-Software und des Robotersteuerungssystems. Sie können auf das Wiki unter folgender Adresse zugreifen:
+
+https://github.com/ftctechnh/ftc_app/wiki
+
+### Javadoc-Referenzmaterial
+
+Die Javadoc-Referenzdokumentation für das FTC-SDK ist jetzt online verfügbar. Besuchen Sie die folgende URL, um die FTC SDK-Dokumentation als Live-Website anzuzeigen:
+
+http://ftctechnh.github.io/ftc_app/doc/javadoc/index.html
+
+Die Dokumentation für das FTC-SDK ist ebenfalls in diesem Repository enthalten. Es gibt einen Unterordner namens "doc", der mehrere Unterordner enthält:
+
+* Der Ordner "apk" enthält die APK-Dateien für die Apps FTC Driver Station und FTC Robot Controller.
+ 
+* Der Ordner "Javadoc" enthält die JavaDoc-Benutzerdokumentation für das FTC-SDK.
+
+### Online-Benutzerforum
+
+Bei technischen Fragen zum SDK besuchen Sie bitte das FTC Technology Forum:
+
+http://ftcforum.usfirst.org/forumdisplay.php?156-FTC-Technology
+
+**************************************************** **************************************
+# Freigabeinformationen
+**************************************************** **************************************
+
+Version 4.3 (gebaut am 18.10.31)
+ * Enthält fehlende TensorFlow-bezogene Bibliotheken und Dateien.
