@@ -360,5 +360,9 @@ public class LimitedDcMotorDrivenActuator implements FTCModularizableSystems{
         return !minimumLimitSwitch.getState(); //inverts so true.
     }
 
+    public boolean getIsBusy(){
+        return motor.isBusy();
+    }
+
 
 }

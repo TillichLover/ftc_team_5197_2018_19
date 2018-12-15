@@ -32,12 +32,13 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Meet 1 FourWheels Facing Crater", group="REVTrixbot")
-//@Disabled
+@Disabled
 //Using 20:1 lift motor in CONFIG. Need to consult with hardware on this.
 public class Meet_1_FourWheels_Crater extends LinearOpMode {
 

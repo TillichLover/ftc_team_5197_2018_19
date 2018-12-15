@@ -68,6 +68,7 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
         LEFT, MID, RIGHT, UNKNOWN
     }
 
+
     @Override
     public void runOpMode() {
 
@@ -101,6 +102,11 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
 
         robot.dt.init(hardwareMap);
         robot.idenfierFor5197Depositer.init(hardwareMap);
+        robot.revTrixBotMineralArm.laArmLifter.init(hardwareMap);
+        sleep(12000); //give time for driver team to put robot on the field
+        robot.revTrixBotMineralArm.laArmLifter.moveToMinPos(0.5);
+        //robot.revTrixBotMineralArm.laArmLifter.teleOpMove(false, true, 0.008); //sleezy but will have to do
+
         //robot.roverRuckusRevTrixBotLift.init(hardwareMap);
 
         // turn on camera
@@ -118,6 +124,7 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
         // right 2 balls are visible
             land(); //starts the robot in the middle, then turn to the right before sampling
             sleep(1000);
+
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
@@ -185,10 +192,14 @@ public class Meet_2_FourWheels_Depot extends LinearOpMode {
         telemetry.update();// Gold X pos.
     }
 
-    private void land(){
-        robot.dt.encoderDrive(1, 3.3, -3.3); //turn to gold
-        sleep(1000);// wait for the previous motion to complete
 
+    private void land(){
+       // robot.revTrixBotMineralArm.laArmLifter.setBraking(false);
+        robot.revTrixBotMineralArm.laArmLifter.moveToMaxPos(0.1);
+        /*
+        robot.dt.encoderDrive(1, 3.3, -3.3); //turn to gold
+        */
+        sleep(2000);
     }
 
 
